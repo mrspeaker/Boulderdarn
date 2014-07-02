@@ -14,6 +14,7 @@
 		frame: 0,
 		falling: false,
 		walkable: false,
+		rounded: false,
 		sheet: new Ω.SpriteSheet("res/tiles.png", 32, 32),
 		init: function (x, y, frame) {
 			this.x = x * 32;
@@ -31,9 +32,6 @@
 			return true;
 		},
 		render: function (gfx) {
-			var c = gfx.ctx;
-			//c.fillStyle = this.col;
-			//c.fillRect(this.x, this.y, this.w, this.h);
 			if (this.row === -1) {
 				return;
 			}
@@ -78,6 +76,7 @@
 
 	blocks.Boulder = Block.extend({
 		type: "boulder",
+		rounded: true,
 		col: 4,
 		speed: 1.5,
 		xb: 0,
@@ -98,7 +97,18 @@
 			if (!this.falling) {
 				if (belowIsEmpty(xc, yc, map)) {
 					this.falling = true;
-					//this.y += this.speed;
+				} else if (map.cells[yc - 1][xc].type !== "boulder" && map.cells[yc + 1][xc].rounded) {
+					if (map.cells[yc][xc + 1].type === "empty" && map.cells[yc + 1][xc + 1].type === "empty" && map.cells[yc - 1][xc + 1].type !== "boulder") {
+						map.cells[yc][xc + 1] = this;
+						map.cells[yc][xc] = new blocks.Empty(xc, yc, frame);
+						this.x += 32;
+						this.falling = true;
+					} else if (map.cells[yc][xc - 1].type === "empty" && map.cells[yc + 1][xc - 1].type === "empty" && map.cells[yc - 1][xc - 1].type !== "boulder") {
+						map.cells[yc][xc - 1] = this;
+						map.cells[yc][xc] = new blocks.Empty(xc, yc, frame);
+						this.x -= 32;
+						this.falling = true;
+					}
 				}
 			}
 
@@ -112,9 +122,11 @@
 					if (!belowIsEmpty(xc, newY, map)) {
 						this.y = newY * 32;
 						this.falling = false;
+						
 					}
 				}
 			}
+
 			this.xc = this.x / 32 | 0;
 			this.yc = this.y / 32 | 0;
 		}
