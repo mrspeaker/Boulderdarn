@@ -46,12 +46,13 @@
                     return newC;
                 });
             });
-            blocks.init(bs, this.map);
-            this.add(blocks);
-
 
             this.player = this.add(new Player(32, 32, 24, 24, this));
             this.player.setMap(this.map);
+
+            blocks.init(bs, this.map, this.player);
+            this.add(blocks);
+
 
         },
 

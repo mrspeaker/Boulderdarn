@@ -75,6 +75,11 @@
 
         target: function (x, y) {
 
+            // Don't target same block
+            if (x === this.tx && y === this.ty) {
+                return;
+            }
+
             this.tx = x;
             this.ty = y;
 
