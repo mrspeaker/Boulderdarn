@@ -98,17 +98,20 @@
 			if (!this.falling) {
 				if (belowIsEmpty(xc, yc, map)) {
 					this.falling = true;
-					this.y += this.speed;
+					//this.y += this.speed;
 				}
-			} else {
+			}
+
+			if (this.falling) {
 				this.y += this.speed;
 				var newY = (this.y / 32 | 0),
 					movedToNewBlock = newY !== yc;
 				if (movedToNewBlock) {
+					map.cells[newY][xc] = this;
+					map.cells[yc][xc] = new blocks.Empty(xc, yc, frame);
 					if (!belowIsEmpty(xc, newY, map)) {
 						this.y = newY * 32;
 						this.falling = false;
-						map.cells[newY][this.xc] = this;
 					}
 				}
 			}
