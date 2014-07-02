@@ -57,7 +57,14 @@
                 yc = this.y / this.cellH | 0;
 
             // Check if new cell...
-            this.level.eat(xc, yc);
+            if (xc !== this.xc || yc !== this.yc) {
+                // If last cell was already in target, don't eat more
+                if (this.xc === this.tx && this.yc === this.ty) {
+
+                } else {
+                    this.level.eat(xc, yc);
+                }
+            }
 
             this.xc = xc;
             this.yc = yc;
