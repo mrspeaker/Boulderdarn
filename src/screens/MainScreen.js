@@ -27,7 +27,6 @@
                 [7, 2, 2, 4, 2, 2, 4, 4, 2, 7],
                 [7, 2, 2, 2, 2, 2, 4, 4, 2, 7],
                 [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
-                [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
                 [7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
             ], 2));
 
@@ -66,17 +65,22 @@
         tick: function () {
 
             if (Ω.input.pressed("moused")) {
-                var cell = this.map.getBlockCell([Ω.input.mouse.x, Ω.input.mouse.y]);
-
-                this.player.target(cell[0], cell[1]);
+                this.handleClick(Ω.input.mouse.x, Ω.input.mouse.y);
             }
 
             if (Ω.input.pressed("touch")) {
-                var cell = this.map.getBlockCell([Ω.input.touch.x, Ω.input.touch.y]);
-
-                this.player.target(cell[0], cell[1]);
+                this.handleClick(Ω.input.touch.x, Ω.input.touch.y);
             }
 
+        },
+
+        handleClick: function (x, y) {
+            if (y >= Ω.env.h - 32) {
+                game.reset();
+                return;
+            }
+            var cell = this.map.getBlockCell([x, y]);
+            this.player.target(cell[0], cell[1]);
         },
 
         render: function (gfx) {
