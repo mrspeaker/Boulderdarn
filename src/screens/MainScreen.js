@@ -53,6 +53,7 @@
 
             this.player = this.add(new Player(32, 32, 24, 24, this));
             this.player.setMap(this.map);
+            this.map.player = this.player;
 
         },
 

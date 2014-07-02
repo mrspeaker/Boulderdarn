@@ -61,6 +61,7 @@
 		type: "player",
 		row: -1
 	});
+	blocks.PLAYER = new blocks.Player(0, 0);
 
 	blocks.Dirt = Block.extend({
 		type: "dirt",
