@@ -23,6 +23,9 @@
                 [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
                 [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
                 [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
+                [7, 2, 7, 4, 2, 4, 4, 4, 2, 7],
+                [7, 2, 2, 4, 2, 2, 4, 4, 2, 7],
+                [7, 2, 2, 2, 2, 2, 4, 4, 2, 7],
                 [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
                 [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
                 [7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
@@ -64,6 +67,12 @@
 
             if (Ω.input.pressed("moused")) {
                 var cell = this.map.getBlockCell([Ω.input.mouse.x, Ω.input.mouse.y]);
+
+                this.player.target(cell[0], cell[1]);
+            }
+
+            if (Ω.input.pressed("touch")) {
+                var cell = this.map.getBlockCell([Ω.input.touch.x, Ω.input.touch.y]);
 
                 this.player.target(cell[0], cell[1]);
             }

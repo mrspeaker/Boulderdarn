@@ -4,9 +4,14 @@
 
     var OmegaGame = Ω.Game.extend({
 
-        canvas: "#board",
+        fps: false,
+        canvas: "canvas",
 
-        init: function (w, h) {
+        init: function (w, h, canvas) {
+
+            if (canvas) {
+                this.canvas = canvas;
+            }
 
             this._super(w, h);
 
