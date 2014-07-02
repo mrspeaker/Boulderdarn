@@ -4,63 +4,59 @@
 
     var MainScreen = Ω.Screen.extend({
 
+        sheet: new Ω.SpriteSheet("res/tiles.png", 32, 32),
+
         init: function () {
 
-            this.map = this.add(new Ω.DebugMap(32, 32, 8, 3, [
-                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 2, 3, 1, 3, 1, 1, 1, 2],
-                [2, 1, 1, 3, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 2, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 2, 2, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-            ], 1));
+            var self = this;
 
-            var bs = [];
+            this.map = this.add(new Ω.BlockMap(this.sheet, [
+                [7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
+                [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
+                [7, 2, 7, 4, 2, 4, 2, 2, 2, 7],
+                [7, 2, 2, 4, 2, 2, 2, 2, 2, 7],
+                [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
+                [7, 2, 7, 2, 2, 2, 2, 2, 2, 7],
+                [7, 2, 7, 7, 2, 2, 2, 2, 2, 7],
+                [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
+                [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
+                [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
+                [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
+                [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
+                [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
+                [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
+                [7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
+            ], 2));
+
             this.map.cells = this.map.cells.map(function (r, j) {
                 return r.map(function (c, i) {
                     var block,
                         newC = c;
                     switch (c) {
-                    /*case 1:
-                        block = new blocks.Dirt(i * 32, j * 32);
+                    case 2:
+                        block = new blocks.Dirt(i, j);
                         break;
-                    */
-                    case 3:
-                        block = new blocks.Rock(i * 32, j * 32);
-                    /*default:
-                        block = new blocks.Empty(i * 32, j * 32);
-                        */
+                    case 4:
+                        block = new blocks.Boulder(i, j);
+                        break;
+                    case 7:
+                        block = new blocks.Stone(i, j);
+                        break;
+                    default:
+                        block = new blocks.Empty(i, j);
                     }
-                    if (block) {
-                        bs.push(block);
-                    }
-                    return newC;
+                    return block;
                 });
             });
 
             this.player = this.add(new Player(32, 32, 24, 24, this));
             this.player.setMap(this.map);
 
-            blocks.init(bs, this.map, this.player);
-            this.add(blocks);
-
-
         },
 
         eat: function (x, y) {
-            
-            if (this.map.cells[y][x] === 1) {
-                this.map.setBlockCell([x, y], 0);
-
+            if (this.map.cells[y][x].type === "dirt") {
+                this.map.setBlockCell([x, y], new blocks.Empty(x, y));
             }
         },
 

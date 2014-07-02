@@ -2,72 +2,112 @@
 
 	"use strict";
 
+	var blocks = {};
+
 	var Block = Ω.Class.extend({
 		x: 0,
 		y: 0,
 		w: 32,
 		h: 32,
-		col: "#300",
-		init: function (x, y) {
-			this.x = x;
-			this.y = y;
+		row: 0,
+		col: 0,
+		frame: 0,
+		falling: false,
+		sheet: new Ω.SpriteSheet("res/tiles.png", 32, 32),
+		init: function (x, y, frame) {
+			this.x = x * 32;
+			this.y = y * 32;
+			this.xc = x;
+			this.yc = y;
+			this.frame = frame || 0;
 		},
-		tick: function (map) {
+		tick: function (map, frame) {
+			if (this.frame === frame) {
+				// Already processed
+				return true;
+			}
+			this.frame = frame;
 			return true;
 		},
 		render: function (gfx) {
 			var c = gfx.ctx;
-			c.fillStyle = this.col;
-			c.fillRect(this.x, this.y, this.w, this.h);
+			//c.fillStyle = this.col;
+			//c.fillRect(this.x, this.y, this.w, this.h);
+			this.sheet.render(
+				gfx,
+				this.col,
+				this.row,
+				this.x,
+				this.y
+			);
 		}
 	});
 
-	var belowIsSolid = function (x, y, map) {
-		return map.cells[y + 1][x] !== 0;
+	var belowIsEmpty = function (x, y, map) {
+		var block = map.cells[y + 1][x];
+		return block.type === "empty" || block.falling;
 	};
 
 
 	blocks.Empty = Block.extend({
-		col: "#000"
+		type: "empty",
+		col: "transparent"
 	});
 
 	blocks.Dirt = Block.extend({
-		col: "#713"
+		type: "dirt",
+		row: 0,
+		col: 0
 	});
 
-	blocks.Rock = Block.extend({
-		col: "#025",
+	blocks.Stone = Block.extend({
+		type: "stone",
+		col: 2
+	});
+
+	blocks.Boulder = Block.extend({
+		type: "boulder",
+		col: 4,
 		speed: 1.5,
 		xb: 0,
 		yb: 0,
 		falling: false,
-		tick: function (map) {
-			var xb = this.xb,
-				yb = this.yb;	
+		tick: function (map, frame) {
+			var xc = this.xc,
+				yc = this.yc,
+				yo = this.y,
+				xo = this.x;
+
+			if (this.frame === frame) {
+				// Already processed
+				return true;
+			}
+			this.frame = frame;
 
 			if (!this.falling) {
-				if (!belowIsSolid(xb, yb, map)) {
+				if (belowIsEmpty(xc, yc, map)) {
 					this.falling = true;
 					this.y += this.speed;
-					map.cells[this.yb][this.xb] = 0;
+					//map.cells[this.yc][this.xc] = new blocks.Empty(this.xo, this.yo, frame);
 				}
 			} else {
 				this.y += this.speed;
 				var newY = (this.y / 32 | 0),
-					movedToNewBlock = newY !== yb;
+					movedToNewBlock = newY !== yc;
 				if (movedToNewBlock) {
-					if (belowIsSolid(xb, newY, map)) {
+					if (!belowIsEmpty(xc, newY, map)) {
 						this.y = newY * 32;
 						this.falling = false;
-						map.cells[newY][this.xb] = 2;
+						map.cells[newY][this.xc] = this;
 					}
 				}
 			}
-			this.xb = this.x / 32 | 0;
-			this.yb = this.y / 32 | 0;
+			this.xc = this.x / 32 | 0;
+			this.yc = this.y / 32 | 0;
 		}
 	});
 
 	window.Block = Block;
+	window.blocks = blocks;
 
 }());
