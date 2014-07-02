@@ -13,6 +13,7 @@
 		col: 0,
 		frame: 0,
 		falling: false,
+		walkable: false,
 		sheet: new Ω.SpriteSheet("res/tiles.png", 32, 32),
 		init: function (x, y, frame) {
 			this.x = x * 32;
@@ -33,6 +34,9 @@
 			var c = gfx.ctx;
 			//c.fillStyle = this.col;
 			//c.fillRect(this.x, this.y, this.w, this.h);
+			if (this.row === -1) {
+				return;
+			}
 			this.sheet.render(
 				gfx,
 				this.col,
@@ -51,11 +55,18 @@
 
 	blocks.Empty = Block.extend({
 		type: "empty",
-		col: "transparent"
+		walkable: true,
+		row: -1
+	});
+
+	blocks.Player = Block.extend({
+		type: "player",
+		row: -1
 	});
 
 	blocks.Dirt = Block.extend({
 		type: "dirt",
+		walkable: true,
 		row: 0,
 		col: 0
 	});
@@ -88,7 +99,6 @@
 				if (belowIsEmpty(xc, yc, map)) {
 					this.falling = true;
 					this.y += this.speed;
-					//map.cells[this.yc][this.xc] = new blocks.Empty(this.xo, this.yo, frame);
 				}
 			} else {
 				this.y += this.speed;
