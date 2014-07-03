@@ -20,6 +20,18 @@
                 yo = 0,
                 speed = 3.5;
 
+            if (this.nextTx) {
+                if (this.xc === this.nextTx) {
+                    this.dir = "vertical";
+                } else if (this.yc === this.nextTy) {
+                    this.dir = "horizontal";
+                }
+                this.tx = this.nextTx;
+                this.ty = this.nextTy;
+                this.nextTx = null;
+                this.nextTy = null;
+            }
+
             if (this.dir) {
 
                 var cx = this.tx * this.cellW - (this.cellW / 2),
@@ -84,16 +96,8 @@
                 return;
             }
 
-            this.tx = x;
-            this.ty = y;
-
-            if (x === this.xc) {
-                this.dir = "vertical";
-            }
-
-            if (y === this.yc) {
-                this.dir = "horizontal";
-            }
+            this.nextTx = x;
+            this.nextTy = y;
 
         },
 

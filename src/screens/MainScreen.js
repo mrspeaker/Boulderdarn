@@ -24,7 +24,7 @@
                 [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
                 [7, 2, 2, 2, 2, 5, 2, 2, 2, 7],
                 [7, 2, 7, 4, 2, 4, 4, 4, 2, 7],
-                [7, 2, 2, 4, 2, 2, 4, 4, 2, 7],
+                [7, 2, 2, 4, 2, 5, 4, 4, 2, 7],
                 [7, 2, 2, 2, 2, 2, 4, 4, 2, 7],
                 [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
                 [7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
@@ -69,7 +69,6 @@
         },
 
         tick: function () {
-
             if (Ω.input.pressed("moused")) {
                 this.handleClick(Ω.input.mouse.x, Ω.input.mouse.y);
             }
@@ -77,7 +76,6 @@
             if (Ω.input.pressed("touch")) {
                 this.handleClick(Ω.input.touch.x, Ω.input.touch.y);
             }
-
         },
 
         handleClick: function (x, y) {

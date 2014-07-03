@@ -47,9 +47,24 @@
 	});
 
 	var belowIsEmptyOrFalling = function (x, y, map) {
-		var block = map.cells[y + 1][x];
-		return block.type === "empty" || block.falling;
-	};
+			var block = map.cells[y + 1][x];
+			return block.type === "empty" || block.falling;
+		},
+		explode = function (xc, yc, map) {
+		
+			map.cells[yc - 1][xc] = new blocks.Empty(xc, yc);
+			map.cells[yc - 1][xc - 1] = new blocks.Empty(xc, yc);
+			map.cells[yc - 1][xc + 1] = new blocks.Empty(xc, yc);
+		
+			map.cells[yc][xc] = new blocks.Empty(xc, yc);
+			map.cells[yc][xc - 1] = new blocks.Empty(xc, yc);
+			map.cells[yc][xc + 1] = new blocks.Empty(xc, yc);
+
+			map.cells[yc + 1][xc] = new blocks.Empty(xc, yc);
+			map.cells[yc + 1][xc - 1] = new blocks.Empty(xc, yc);
+			map.cells[yc + 1][xc + 1] = new blocks.Empty(xc, yc);
+		
+		};
 
 	blocks.Empty = Block.extend({
 		type: "empty",
@@ -88,15 +103,13 @@
 		type: "boulder",
 		rounded: true,
 		col: 4,
-		speed: 1.5,
+		speed: 2.5,
 		xb: 0,
 		yb: 0,
 		falling: false,
 		tick: function (map, frame) {
 			var xc = this.xc,
-				yc = this.yc,
-				yo = this.y,
-				xo = this.x;
+				yc = this.yc;
 
 			if (this.frame >= frame) {
 				// Already processed
@@ -115,46 +128,42 @@
 				},
 				moveTo = function (obj, xo, yo) {
 					var ob = map.cells[yc + yo][xc + xo];
-					if (ob.frame === frame && ob.type !== "empty") {
+					if (ob.frame === frame) {
 						console.error("overwriting already processed", ob.type);
 					}
 					map.cells[yc + yo][xc + xo] = obj;
-					map.cells[yc][xc] = new blocks.Empty(xc, yc, frame);
+					map.cells[yc][xc] = new blocks.Empty(xc, yc);
 				};
 
 			if (!this.falling) {
 				if (belowIsEmptyOrFalling(xc, yc, map)) {
 					this.falling = true;
 				} else if (isnt("boulder", 0, -1) && block(0, 1).rounded) {
-					// Maybe this can be simpler - check for "empty || falling"?
 					if (is("empty", +1, 0) && is("empty", +1, +1) && !block(+1, -1).falling) {
-						//console.log(block(+1, -1).type);
 						moveTo(this, +1, 0);
 						this.x += 32;
-						this.falling = false;
+						this.falling = true;
 					} else if (is("empty", -1, 0) && is("empty", -1, 1) && !block(-1, -1).falling) {
-						//console.log(block(-1, -1).type);
 						moveTo(this, -1, 0);
 						this.x -= 32;
-						this.falling = false;
+						this.falling = true;
 					}
 				}
 			}
 
 			if (this.falling) {
+				var newY;
 				this.y += this.speed;
-				var newY = (this.y / 32 | 0),
-					movedToNewBlock = newY !== yc;
-				if (movedToNewBlock) {
+				newY = (this.y / 32 | 0);
+				if (newY !== yc) {
 					moveTo(this, 0, newY - yc);
 					if (!belowIsEmptyOrFalling(xc, newY, map)) {
 						this.y = newY * 32;
 						this.falling = false;
 						var block = map.cells[newY + 1][xc];
 						if (block.explodable) {
-							game.reset();
+							explode(xc, newY + 1, map);
 						}
-						
 					}
 				}
 			}
