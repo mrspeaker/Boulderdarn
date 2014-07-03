@@ -46,7 +46,7 @@
 		}
 	});
 
-	var belowIsEmpty = function (x, y, map) {
+	var belowIsEmptyOrFalling = function (x, y, map) {
 		var block = map.cells[y + 1][x];
 		return block.type === "empty" || block.falling;
 	};
@@ -59,6 +59,7 @@
 
 	blocks.Player = Block.extend({
 		type: "player",
+		walkable: true,
 		explodable: true,
 		row: -1
 	});
@@ -76,6 +77,13 @@
 		col: 2
 	});
 
+	blocks.Explosive = Block.extend({
+		type: "explosive",
+		explodable: true,
+		col: 3,
+		row: 1
+	});
+
 	blocks.Boulder = Block.extend({
 		type: "boulder",
 		rounded: true,
@@ -90,26 +98,45 @@
 				yo = this.y,
 				xo = this.x;
 
-			if (this.frame === frame) {
+			if (this.frame >= frame) {
 				// Already processed
 				return true;
 			}
 			this.frame = frame;
 
+			var is = function (type, xo, yo) {
+					return map.cells[yc + yo][xc + xo].type === type;
+				},
+				isnt = function (type, xo, yo) {
+					return !is(type, xo, yo);
+				},
+				block = function (xo, yo) {
+					return map.cells[yc + yo][xc + xo];
+				},
+				moveTo = function (obj, xo, yo) {
+					var ob = map.cells[yc + yo][xc + xo];
+					if (ob.frame === frame && ob.type !== "empty") {
+						console.error("overwriting already processed", ob.type);
+					}
+					map.cells[yc + yo][xc + xo] = obj;
+					map.cells[yc][xc] = new blocks.Empty(xc, yc, frame);
+				};
+
 			if (!this.falling) {
-				if (belowIsEmpty(xc, yc, map)) {
+				if (belowIsEmptyOrFalling(xc, yc, map)) {
 					this.falling = true;
-				} else if (map.cells[yc - 1][xc].type !== "boulder" && map.cells[yc + 1][xc].rounded) {
-					if (map.cells[yc][xc + 1].type === "empty" && map.cells[yc + 1][xc + 1].type === "empty" && map.cells[yc - 1][xc + 1].type !== "boulder") {
-						map.cells[yc][xc + 1] = this;
-						map.cells[yc][xc] = new blocks.Empty(xc, yc, frame);
+				} else if (isnt("boulder", 0, -1) && block(0, 1).rounded) {
+					// Maybe this can be simpler - check for "empty || falling"?
+					if (is("empty", +1, 0) && is("empty", +1, +1) && !block(+1, -1).falling) {
+						//console.log(block(+1, -1).type);
+						moveTo(this, +1, 0);
 						this.x += 32;
-						this.falling = true;
-					} else if (map.cells[yc][xc - 1].type === "empty" && map.cells[yc + 1][xc - 1].type === "empty" && map.cells[yc - 1][xc - 1].type !== "boulder") {
-						map.cells[yc][xc - 1] = this;
-						map.cells[yc][xc] = new blocks.Empty(xc, yc, frame);
+						this.falling = false;
+					} else if (is("empty", -1, 0) && is("empty", -1, 1) && !block(-1, -1).falling) {
+						//console.log(block(-1, -1).type);
+						moveTo(this, -1, 0);
 						this.x -= 32;
-						this.falling = true;
+						this.falling = false;
 					}
 				}
 			}
@@ -119,9 +146,8 @@
 				var newY = (this.y / 32 | 0),
 					movedToNewBlock = newY !== yc;
 				if (movedToNewBlock) {
-					map.cells[newY][xc] = this;
-					map.cells[yc][xc] = new blocks.Empty(xc, yc, frame);
-					if (!belowIsEmpty(xc, newY, map)) {
+					moveTo(this, 0, newY - yc);
+					if (!belowIsEmptyOrFalling(xc, newY, map)) {
 						this.y = newY * 32;
 						this.falling = false;
 						var block = map.cells[newY + 1][xc];

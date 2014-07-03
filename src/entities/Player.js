@@ -58,11 +58,15 @@
 
             // Check if new cell...
             if (xc !== this.xc || yc !== this.yc) {
+                
                 // If last cell was already in target, don't eat more
                 if (this.xc === this.tx && this.yc === this.ty) {
 
                 } else {
-                    this.level.eat(xc, yc);
+                    if (this.level.eat(xc, yc)) {
+                        this.map.cells[yc][xc] = blocks.PLAYER;
+                    };
+                    this.map.cells[this.yc][this.xc] = new blocks.Empty(this.xc, this.yc, 0);
                 }
             }
 
