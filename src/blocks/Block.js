@@ -15,6 +15,7 @@
 		falling: false,
 		walkable: false,
 		rounded: false,
+		explodable: false,
 		sheet: new Ω.SpriteSheet("res/tiles.png", 32, 32),
 		init: function (x, y, frame) {
 			this.x = x * 32;
@@ -50,7 +51,6 @@
 		return block.type === "empty" || block.falling;
 	};
 
-
 	blocks.Empty = Block.extend({
 		type: "empty",
 		walkable: true,
@@ -59,6 +59,7 @@
 
 	blocks.Player = Block.extend({
 		type: "player",
+		explodable: true,
 		row: -1
 	});
 	blocks.PLAYER = new blocks.Player(0, 0);
@@ -123,6 +124,10 @@
 					if (!belowIsEmpty(xc, newY, map)) {
 						this.y = newY * 32;
 						this.falling = false;
+						var block = map.cells[newY + 1][xc];
+						if (block.explodable) {
+							game.reset();
+						}
 						
 					}
 				}
