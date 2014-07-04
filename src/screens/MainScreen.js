@@ -21,7 +21,7 @@
                 [7, 2, 2, 2, 2, 4, 2, 2, 2, 7],
                 [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
                 [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
-                [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
+                [7, 2, 2, 2, 2, 2, 2, 6, 2, 7],
                 [7, 2, 2, 2, 2, 5, 2, 2, 2, 7],
                 [7, 2, 7, 4, 2, 4, 4, 4, 2, 7],
                 [7, 2, 2, 4, 2, 5, 4, 4, 2, 7],
@@ -30,10 +30,12 @@
                 [7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
             ], 2));
 
+
             this.map.cells = this.map.cells.map(function (r, j) {
                 return r.map(function (c, i) {
                     var block,
                         newC = c;
+
                     switch (c) {
                     case 2:
                         block = new blocks.Dirt(i, j);
@@ -43,6 +45,9 @@
                         break;
                     case 5:
                         block = new blocks.Explosive(i, j);
+                        break;
+                    case 6:
+                        block = new blocks.Ameoba(i, j);
                         break;
                     case 7:
                         block = new blocks.Stone(i, j);
