@@ -6,6 +6,8 @@
 
         sheet: new Ω.SpriteSheet("res/tiles.png", 32, 32),
 
+        diamonds: 0,
+
         init: function () {
 
             var self = this;
@@ -16,9 +18,9 @@
                 [7, 2, 7, 4, 2, 4, 4, 4, 2, 7],
                 [7, 2, 2, 4, 2, 2, 2, 4, 2, 7],
                 [7, 2, 2, 2, 2, 2, 4, 4, 2, 7],
-                [7, 2, 7, 2, 2, 4, 2, 4, 2, 7],
-                [7, 2, 7, 7, 2, 4, 2, 2, 2, 7],
-                [7, 2, 2, 2, 2, 4, 2, 2, 2, 7],
+                [7, 3, 7, 2, 2, 4, 2, 4, 2, 7],
+                [7, 3, 7, 7, 2, 4, 2, 2, 2, 7],
+                [7, 3, 3, 2, 2, 4, 2, 2, 2, 7],
                 [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
                 [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
                 [7, 2, 2, 2, 2, 2, 2, 6, 2, 7],
@@ -26,7 +28,7 @@
                 [7, 2, 7, 4, 2, 4, 4, 4, 2, 7],
                 [7, 2, 2, 4, 2, 5, 4, 4, 2, 7],
                 [7, 2, 2, 2, 2, 2, 4, 4, 2, 7],
-                [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
+                [7, 3, 2, 2, 2, 2, 2, 2, 3, 7],
                 [7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
             ], 2));
 
@@ -39,6 +41,10 @@
                     switch (c) {
                     case 2:
                         block = new blocks.Dirt(i, j);
+                        break;
+                    case 3:
+                        self.diamonds++;
+                        block = new blocks.Diamond(i, j);
                         break;
                     case 4:
                         block = new blocks.Boulder(i, j);
@@ -65,14 +71,6 @@
 
         },
 
-        eat: function (x, y) {
-            if (this.map.cells[y][x].type === "dirt") {
-                this.map.setBlockCell([x, y], new blocks.Empty(x, y));
-                return true;
-            }
-            return false;
-        },
-
         tick: function () {
             if (Ω.input.pressed("moused")) {
                 this.handleClick(Ω.input.mouse.x, Ω.input.mouse.y);
@@ -81,6 +79,14 @@
             if (Ω.input.pressed("touch")) {
                 this.handleClick(Ω.input.touch.x, Ω.input.touch.y);
             }
+        },
+
+        diamondGet: function () {
+
+            if (--this.diamonds === 0) {
+                game.reset();
+            }
+
         },
 
         handleClick: function (x, y) {
@@ -95,6 +101,12 @@
         render: function (gfx) {
 
             this.clear(gfx, "hsl(1, 1%, 1%)");
+
+            var c = gfx.ctx;
+
+            c.fillStyle = "#999";
+            c.fillText(this.diamonds, 10, Ω.env.h - 10);
+            c.fillText(this.player.xc + ":" + this.player.yc, Ω.env.w - 24, Ω.env.h - 10);
 
         }
     });

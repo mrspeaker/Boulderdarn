@@ -4,8 +4,8 @@
 
     var Player = Ω.Entity.extend({
         
-        xc: 0,
-        yc: 0,
+        xc: 1,
+        yc: 1,
 
         dir: "",
 
@@ -66,7 +66,9 @@
             this.move(xo, yo, this.map);
 
             var xc = this.x / this.cellW | 0,
-                yc = this.y / this.cellH | 0;
+                yc = this.y / this.cellH | 0,
+                oldXc = this.xc,
+                oldYc = this.yc;
 
             // Check if new cell...
             if (xc !== this.xc || yc !== this.yc) {
@@ -75,10 +77,16 @@
                 if (this.xc === this.tx && this.yc === this.ty) {
 
                 } else {
-                    if (this.level.eat(xc, yc)) {
-                        this.map.cells[yc][xc] = blocks.PLAYER;
-                    };
-                    this.map.cells[this.yc][this.xc] = new blocks.Empty(this.xc, this.yc, 0);
+                    var block = this.map.cells[yc][xc].type;
+                    this.map.cells[oldYc][oldXc] = new blocks.Empty(oldXc, oldYc);
+                    
+                    if (block === "dirt") {
+                        this.map.setBlockCell([xc, yc], new blocks.Empty(xc, yc));
+                    } else if (block === "diamond") {
+                        this.map.setBlockCell([xc, yc], new blocks.Empty(xc, yc));
+                        this.level.diamondGet();
+                    }
+                    this.map.setBlockCell([xc, yc], blocks.PLAYER);
                 }
             }
 

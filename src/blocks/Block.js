@@ -85,6 +85,13 @@
 	});
 	blocks.PLAYER = new blocks.Player(0, 0);
 
+	blocks.Diamond = Block.extend({
+		type: "diamond",
+		walkable: true,
+		row: 1,
+		col: 4
+	});
+
 	blocks.Dirt = Block.extend({
 		type: "dirt",
 		walkable: true,
@@ -100,7 +107,7 @@
 	blocks.Explosive = Block.extend({
 		type: "explosive",
 		explodable: true,
-		col: 3,
+		col: 1,
 		row: 1
 	});
 

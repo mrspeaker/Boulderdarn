@@ -4,7 +4,8 @@
 
 	var Ameoba = Block.extend({
 		type: "ameoba",
-		col: 0,
+
+		col: 3,
 		row: 1,
 		spread: 300,
 
@@ -22,7 +23,6 @@
 			}
 
 			if ((frame - this.startFrame) % this.spread === this.spread - 1) {
-				console.log("exp, frame");
 				this.expand(map, frame);
 			}
 
