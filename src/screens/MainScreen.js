@@ -65,6 +65,8 @@
                 });
             });
 
+            this.nodes = this.generateAStar(this.map.cells);
+
             this.player = this.add(new Player(32, 32, 24, 24, this));
             this.player.setMap(this.map);
             this.map.player = this.player;
@@ -79,6 +81,25 @@
             if (Ω.input.pressed("touch")) {
                 this.handleClick(Ω.input.touch.x, Ω.input.touch.y);
             }
+        },
+
+        generateAStar: function (cells) {
+            var walkCells = cells.map(function (r) {
+                return r.map(function (c) {
+                    return c.walkable ? 0 : 1;
+                });
+            });
+
+            return new Ω.Math.aStar.Graph(walkCells);
+        },
+
+        searchAStar: function (graph, from, to) {
+            var nodes = graph.nodes,
+                fromNode = nodes[from[1]][from[0]],
+                toNode = nodes[to[1]][to[0]];
+
+            // Recompute A*
+            return Ω.Math.aStar.search(nodes, fromNode, toNode);
         },
 
         diamondGet: function () {
@@ -96,6 +117,18 @@
             }
             var cell = this.map.getBlockCell([x, y]);
             this.player.target(cell[0], cell[1]);
+            
+            // Update aStar
+            var graph = this.generateAStar(this.map.cells);
+            var path = this.searchAStar(
+                graph, 
+                [this.player.xc, this.player.yc], 
+                [cell[0], cell[1]]);
+            
+            this.path = path.map(function (n) {
+                // aStar lib switches x & y
+                return [n.y, n.x];
+            });
         },
 
         render: function (gfx) {
