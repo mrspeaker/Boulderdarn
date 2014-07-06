@@ -115,6 +115,7 @@
                 game.reset();
                 return;
             }
+            // NOTE! BUG! Doesn't allow for scrolling browser
             var cell = this.map.getBlockCell([x, y]);
             this.player.target(cell[0], cell[1]);
             
@@ -124,8 +125,7 @@
                 graph, 
                 [this.player.xc, this.player.yc], 
                 [cell[0], cell[1]]);
-            
-            this.path = path.map(function (n) {
+            this.player.path = path.map(function (n) {
                 // aStar lib switches x & y
                 return [n.y, n.x];
             });

@@ -7,11 +7,14 @@
         xc: 1,
         yc: 1,
 
+        path: null,
+
         dir: "",
 
         init: function (x, y, w, h, level) {
             this._super(x, y, w, h);
             this.level = level;
+            this.path = [];
         },
 
         tick: function () {
@@ -19,6 +22,33 @@
             var xo = 0,
                 yo = 0,
                 speed = 3.5;
+
+            if (this.path.length > 0) {
+                var target = this.path[0];
+                if (target[0] === this.xc && target[1] === this.yc) {
+                    this.path = this.path.slice(1);
+                    this.y = target[1] * this.cellH + ((this.cellH - this.h) / 2);
+                    this.x = target[0] * this.cellW + ((this.cellW - this.w) / 2);
+                } else {
+                    if (target[0] !== this.xc) {
+                        if (target[0] > this.xc) {
+                            xo += speed;
+                        } else {
+                            xo -= speed;
+                        }
+                        this.y = target[1] * this.cellH + ((this.cellH - this.h) / 2);
+                    } else {
+                        if (target[1] > this.yc) {
+                            yo += speed;
+                        } else {
+                            yo -= speed;
+                        }
+                        this.x = target[0] * this.cellW + ((this.cellW - this.w) / 2);
+                    }
+                }
+            }
+
+            /*
 
             if (this.nextTx) {
                 if (this.xc === this.nextTx) {
@@ -62,6 +92,7 @@
                     }
                 }
             }
+            */
 
             this.move(xo, yo, this.map);
 
