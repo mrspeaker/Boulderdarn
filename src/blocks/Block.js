@@ -50,7 +50,7 @@
 			var block = map.cells[y + 1][x];
 			return block.type === "empty" || block.falling;
 		},
-		explode = function (xc, yc, map) {
+		explode = function (xc, yc, map, block) {
 		
 			map.cells[yc - 1][xc] = new blocks.Empty(xc, yc);
 			map.cells[yc - 1][xc - 1] = new blocks.Empty(xc, yc);
@@ -63,6 +63,10 @@
 			map.cells[yc + 1][xc] = new blocks.Empty(xc, yc);
 			map.cells[yc + 1][xc - 1] = new blocks.Empty(xc, yc);
 			map.cells[yc + 1][xc + 1] = new blocks.Empty(xc, yc);
+
+			if (block.type === "player") {
+				map.player.exploded = true;
+			};
 		
 		};
 

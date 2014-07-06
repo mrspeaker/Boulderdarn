@@ -66,7 +66,7 @@
 						this.falling = false;
 						var block = map.cells[newY + 1][xc];
 						if (block.explodable) {
-							blocks.explode(xc, newY + 1, map);
+							blocks.explode(xc, newY + 1, map, block);
 						}
 					}
 				}

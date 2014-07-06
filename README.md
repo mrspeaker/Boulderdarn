@@ -1,5 +1,11 @@
 # boulderdarn
 
+## ideas...
+
+- jigsaw/tron card: collect them all
+- rooms/rpg style
+
+
 ## FIX Ω for EJECTA, YO!
 
 - fix urlparams (check window, window.location)

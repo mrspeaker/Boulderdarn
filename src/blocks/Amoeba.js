@@ -7,7 +7,7 @@
 
 		col: 3,
 		row: 1,
-		spread: 300,
+		spread: 130,
 
 		startFrame: -1,
 

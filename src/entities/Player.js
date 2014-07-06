@@ -8,6 +8,7 @@
         yc: 1,
 
         path: null,
+        exploded: false,
 
         dir: "",
 
@@ -21,78 +22,14 @@
 
             var xo = 0,
                 yo = 0,
+                move = [],
                 speed = 3.5;
 
             if (this.path.length > 0) {
-                var target = this.path[0];
-                if (target[0] === this.xc && target[1] === this.yc) {
-                    this.path = this.path.slice(1);
-                    this.y = target[1] * this.cellH + ((this.cellH - this.h) / 2);
-                    this.x = target[0] * this.cellW + ((this.cellW - this.w) / 2);
-                } else {
-                    if (target[0] !== this.xc) {
-                        if (target[0] > this.xc) {
-                            xo += speed;
-                        } else {
-                            xo -= speed;
-                        }
-                        this.y = target[1] * this.cellH + ((this.cellH - this.h) / 2);
-                    } else {
-                        if (target[1] > this.yc) {
-                            yo += speed;
-                        } else {
-                            yo -= speed;
-                        }
-                        this.x = target[0] * this.cellW + ((this.cellW - this.w) / 2);
-                    }
-                }
+                move = this.tick_follow(xo, yo);
+                xo = move[0];
+                yo = move[1];
             }
-
-            /*
-
-            if (this.nextTx) {
-                if (this.xc === this.nextTx) {
-                    this.dir = "vertical";
-                } else if (this.yc === this.nextTy) {
-                    this.dir = "horizontal";
-                }
-                this.tx = this.nextTx;
-                this.ty = this.nextTy;
-                this.nextTx = null;
-                this.nextTy = null;
-            }
-
-            if (this.dir) {
-
-                var cx = this.tx * this.cellW - (this.cellW / 2),
-                    cy = this.ty * this.cellH - (this.cellH / 2),
-                    x = this.x - (this.w / 2),
-                    y = this.y - (this.h / 2);
-
-                if (this.dir === "vertical") {
-                    var yoff = cy - y;
-                    if (yoff > speed) {
-                        yo += speed;
-                    } else if (yoff < -speed) {
-                        yo -= speed;
-                    } else {
-                        this.dir = "";
-                        this.y = this.ty * this.cellH + ((this.cellH - this.h) / 2);
-                    }
-                }
-                if (this.dir === "horizontal") {
-                    var xoff = cx - x;
-                    if (xoff > speed) {
-                        xo += speed;
-                    } else if (xoff < -speed) {
-                        xo -= speed;
-                    } else {
-                        this.dir = "";
-                        this.x = this.tx * this.cellW + ((this.cellW - this.w) / 2);
-                    }
-                }
-            }
-            */
 
             this.move(xo, yo, this.map);
 
@@ -124,7 +61,45 @@
             this.xc = xc;
             this.yc = yc;
 
+            if (this.exploded) {
+                game.reset();                
+            }
+
             return true;
+
+        },
+
+        tick_follow: function (xo, yo) {
+            var speed = 3.5,
+                target = this.path[0],
+                tx = target[0] * this.cellW + 4,
+                ty = target[1] * this.cellH + 4,
+                dx = Math.abs(tx - this.x),
+                dy = Math.abs(ty - this.y);
+
+            if (dx <= speed && dy <= speed) {
+                this.path = this.path.slice(1);
+                this.y = target[1] * this.cellH + ((this.cellH - this.h) / 2);
+                this.x = target[0] * this.cellW + ((this.cellW - this.w) / 2);
+            } else {
+                if (dx > speed) {
+                    if (tx > this.x) {
+                        xo += speed;
+                    } else {
+                        xo -= speed;
+                    }
+                    //this.y = target[1] * this.cellH + ((this.cellH - this.h) / 2);
+                } else {
+                    if (ty > this.y) {
+                        yo += speed;
+                    } else {
+                        yo -= speed;
+                    }
+                    //this.x = target[0] * this.cellW + ((this.cellW - this.w) / 2);
+                }
+            }
+
+            return [xo, yo];
 
         },
 
