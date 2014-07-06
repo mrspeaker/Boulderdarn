@@ -8,68 +8,27 @@
 
         diamonds: 0,
 
-        init: function () {
+        roomW: 10,
+        roomH: 17,
+
+        roomX: 0,
+        roomY: 0,
+
+        loaded: false,
+
+        init: function (x, y) {
 
             var self = this;
 
-            this.map = this.add(new Ω.BlockMap(this.sheet, [
-                [7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
-                [7, 2, 2, 2, 2, 2, 4, 3, 2, 7],
-                [7, 2, 7, 4, 2, 4, 4, 4, 2, 7],
-                [7, 2, 2, 4, 2, 2, 2, 4, 2, 7],
-                [7, 2, 2, 2, 2, 2, 4, 4, 2, 7],
-                [7, 3, 7, 2, 3, 4, 3, 4, 2, 7],
-                [7, 3, 7, 6, 2, 4, 2, 2, 2, 7],
-                [7, 3, 3, 2, 2, 4, 2, 2, 2, 7],
-                [7, 2, 2, 2, 2, 2, 2, 2, 2, 7],
-                [7, 2, 2, 2, 2, 2, 2, 3, 2, 7],
-                [7, 2, 2, 2, 2, 2, 2, 6, 2, 7],
-                [7, 2, 2, 2, 2, 5, 2, 2, 2, 7],
-                [7, 2, 6, 4, 2, 4, 4, 4, 2, 7],
-                [7, 2, 3, 4, 2, 5, 4, 4, 2, 7],
-                [7, 2, 2, 2, 2, 2, 4, 4, 2, 7],
-                [7, 2, 2, 2, 2, 2, 2, 2, 3, 7],
-                [7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
-            ], 2));
+            this.roomX = x | 0;
+            this.roomY = y | 0;
 
-
-            this.map.cells = this.map.cells.map(function (r, j) {
-                return r.map(function (c, i) {
-                    var block,
-                        newC = c;
-
-                    switch (c) {
-                    case 2:
-                        block = new blocks.Dirt(i, j);
-                        break;
-                    case 3:
-                        self.diamonds++;
-                        block = new blocks.Diamond(i, j);
-                        break;
-                    case 4:
-                        block = new blocks.Boulder(i, j);
-                        break;
-                    case 5:
-                        block = new blocks.Explosive(i, j);
-                        break;
-                    case 6:
-                        block = new blocks.Ameoba(i, j);
-                        break;
-                    case 7:
-                        block = new blocks.Stone(i, j);
-                        break;
-                    default:
-                        block = new blocks.Empty(i, j);
-                    }
-                    return block;
+            this.loadLevel("res/data/level01.json" + "?" + Math.random(), function (data) {
+                self.levelData = data;
+                self.parseLevel(data, function () {
+                    self.loaded = true;
                 });
             });
-
-            this.nodes = this.generateAStar(this.map.cells);
-
-            this.player = this.add(new Player(32, 32, 24, 24, this));
-            this.player.setMap(this.map);
-            this.map.player = this.player;
 
         },
 
@@ -108,6 +67,100 @@
                 game.reset();
             }
 
+        },
+
+        loadLevel: function (name, cb) {
+
+            var request = new XMLHttpRequest();
+
+            request.onreadystatechange = function() {
+                if( request.readyState == request.DONE && request.status == 200 ) {
+                    console.log( 'server', request.getResponseHeader('server') );
+                    cb(JSON.parse(request.responseText));
+                }
+            };
+
+            request.open('GET', name);
+            request.send();
+
+
+        },
+
+        parseLevel: function (data, cb) {
+            var tiles = data.layers[0],
+                objects = data.layers[1].objects,
+                self = this;
+
+            var cells = [],
+                rx = this.roomX * this.roomW,
+                ry = this.roomY * this.roomH;
+
+            for (var j = ry; j < ry + this.roomH; j++) {
+                cells.push([]);
+                for (var i = rx; i < rx + this.roomW; i++) {
+                    cells[cells.length - 1].push(tiles.data[j * (this.roomW * 3) + i]);
+                }
+            }
+
+            
+            this.map = this.add(new Ω.BlockMap(this.sheet, cells, 2));
+            this.map.cells = this.map.cells.map(function (r, j) {
+                return r.map(function (c, i) {
+                    var block,
+                        newC = c;
+
+                    switch (c) {
+                    case 1:
+                        block = new blocks.Dirt(i, j);
+                        break;
+                    case 2:
+                        block = new blocks.Stone(i, j);
+                        break;
+                    case 4:
+                    case 5:
+                        block = new blocks.Boulder(i, j);
+                        break;
+                    case 7:
+                    case 8:
+                        block = new blocks.Explosive(i, j);
+                        break;
+                    case 9:
+                        block = new blocks.Ameoba(i, j);
+                        break;
+                    case 11:
+                        self.diamonds++;
+                        block = new blocks.Diamond(i, j);
+                        break;
+
+                    
+                    default:
+                        block = new blocks.Empty(i, j);
+                    }
+                    return block;
+                });
+            });
+
+            objects.forEach(function (o) {
+                var x = (o.x / 32 | 0) - rx,
+                    y = ((o.y - 32) / 32 | 0) - ry,
+                    target = o.properties.target;
+
+                console.log(x, y, rx)
+
+                if (x > -1 && x < self.roomW && y > -1 && y< self.roomH) {
+                    console.log("add!", x, y, target)
+                    var door = new blocks.Door(x, y, target);
+                    self.map.cells[y][x] = door;
+                }
+            });
+
+
+            this.nodes = this.generateAStar(this.map.cells);
+
+            this.player = this.add(new Player(32, 32, 24, 24, this));
+            this.player.setMap(this.map);
+            this.map.player = this.player;
+            cb();
         },
 
         handleClick: function (x, y) {

@@ -53,6 +53,11 @@
                     } else if (block === "diamond") {
                         this.map.setBlockCell([xc, yc], new blocks.Empty(xc, yc));
                         this.level.diamondGet();
+                    } else if (block === "door") {
+                        var target = this.map.cells[yc][xc].target;
+                        target = target.split("_");
+                        console.log(target)
+                        game.reset(parseInt(target[0], 10) - 1, parseInt(target[1], 10) - 1);
                     }
                     this.map.setBlockCell([xc, yc], blocks.PLAYER);
                 }
@@ -79,6 +84,7 @@
 
             if (dx <= speed && dy <= speed) {
                 this.path = this.path.slice(1);
+                // Snap
                 this.y = target[1] * this.cellH + ((this.cellH - this.h) / 2);
                 this.x = target[0] * this.cellW + ((this.cellW - this.w) / 2);
             } else {
@@ -88,14 +94,12 @@
                     } else {
                         xo -= speed;
                     }
-                    //this.y = target[1] * this.cellH + ((this.cellH - this.h) / 2);
                 } else {
                     if (ty > this.y) {
                         yo += speed;
                     } else {
                         yo -= speed;
                     }
-                    //this.x = target[0] * this.cellW + ((this.cellW - this.w) / 2);
                 }
             }
 
@@ -123,7 +127,23 @@
 
         render: function (gfx) {
 
-            var c = gfx.ctx;
+            var c = gfx.ctx,
+                w = this.cellW,
+                h = this.cellH;
+
+            if (this.path.length > 0) {
+                c.strokeStyle = "rgba(200, 0, 0, 0.7)";
+                c.lineWidth = 10;
+                c.beginPath();
+                c.moveTo(this.x + 15, this.y + 15);
+                this.path.forEach(function (b) {
+                    c.lineTo(b[0] * w + 15, b[1] * h + 15);
+                });
+                c.stroke();
+                c.lineWidth = 1;
+            }
+
+
             c.fillStyle = "#333";
             c.fillRect(this.x, this.y, this.w, this.h);
 

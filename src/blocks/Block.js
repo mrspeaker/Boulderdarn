@@ -115,6 +115,17 @@
 		row: 1
 	});
 
+	blocks.Door = Block.extend({
+		type: "door",
+		walkable: true,
+		row: 1,
+		col: 4,
+		init: function (x, y, target) {
+			this._super(x, y);
+			this.target = target;
+		}
+	});
+
 	window.Block = Block;
 	window.blocks = blocks;
 
