@@ -5,7 +5,7 @@
 	var Ameoba = Block.extend({
 		type: "ameoba",
 
-		col: 3,
+		col: 2,
 		row: 1,
 		spread: 130,
 

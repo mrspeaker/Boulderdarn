@@ -8,7 +8,7 @@
 
         diamonds: 0,
 
-        roomW: 10,
+        roomW: 11,
         roomH: 17,
 
         roomX: 0,
@@ -64,7 +64,7 @@
         diamondGet: function () {
 
             if (--this.diamonds === 0) {
-                game.reset();
+                //game.reset();
             }
 
         },
@@ -75,7 +75,7 @@
 
             request.onreadystatechange = function() {
                 if( request.readyState == request.DONE && request.status == 200 ) {
-                    console.log( 'server', request.getResponseHeader('server') );
+                    //console.log( 'server', request.getResponseHeader('server') );
                     cb(JSON.parse(request.responseText));
                 }
             };
@@ -98,7 +98,7 @@
             for (var j = ry; j < ry + this.roomH; j++) {
                 cells.push([]);
                 for (var i = rx; i < rx + this.roomW; i++) {
-                    cells[cells.length - 1].push(tiles.data[j * (this.roomW * 3) + i]);
+                    cells[cells.length - 1].push(tiles.data[j * (33) + i]);
                 }
             }
 
@@ -139,13 +139,13 @@
                     return block;
                 });
             });
+            this.map.x -= 16;
+            this.map.y -= 16;
 
             objects.forEach(function (o) {
                 var x = (o.x / 32 | 0) - rx,
                     y = ((o.y - 32) / 32 | 0) - ry,
                     target = o.properties.target;
-
-                console.log(x, y, rx)
 
                 if (x > -1 && x < self.roomW && y > -1 && y< self.roomH) {
                     console.log("add!", x, y, target)
@@ -165,9 +165,13 @@
 
         handleClick: function (x, y) {
             if (y >= Ω.env.h - 32) {
+                console.log(
+                    "yah");
                 game.reset();
                 return;
             }
+            x += 16;
+            y += 16;
             // NOTE! BUG! Doesn't allow for scrolling browser
             var cell = this.map.getBlockCell([x, y]);
             this.player.target(cell[0], cell[1]);

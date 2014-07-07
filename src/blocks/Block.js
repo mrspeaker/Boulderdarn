@@ -51,23 +51,21 @@
 			return block.type === "empty" || block.falling;
 		},
 		explode = function (xc, yc, map, block) {
-		
-			map.cells[yc - 1][xc] = new blocks.Empty(xc, yc);
-			map.cells[yc - 1][xc - 1] = new blocks.Empty(xc, yc);
-			map.cells[yc - 1][xc + 1] = new blocks.Empty(xc, yc);
-		
-			map.cells[yc][xc] = new blocks.Empty(xc, yc);
-			map.cells[yc][xc - 1] = new blocks.Empty(xc, yc);
-			map.cells[yc][xc + 1] = new blocks.Empty(xc, yc);
+			// Erase neighbouring cells around target
+			[
+				[-1, -1], [0, -1], [1, -1],
+				[-1,  0], [0,  0], [1,  0],
+				[-1,  1], [0,  1], [1,  1]
+			].forEach(function (p) {
+				var x = xc + p[0],
+					y = yc + p[1];
+				map.cells[y][x] = new blocks.Empty(x, y);
+			});
 
-			map.cells[yc + 1][xc] = new blocks.Empty(xc, yc);
-			map.cells[yc + 1][xc - 1] = new blocks.Empty(xc, yc);
-			map.cells[yc + 1][xc + 1] = new blocks.Empty(xc, yc);
-
+			// FIXME: shouldn't be here, yo.
 			if (block.type === "player") {
 				map.player.exploded = true;
 			};
-		
 		};
 
 	blocks = {
@@ -119,7 +117,7 @@
 		type: "door",
 		walkable: true,
 		row: 1,
-		col: 4,
+		col: 3,
 		init: function (x, y, target) {
 			this._super(x, y);
 			this.target = target;

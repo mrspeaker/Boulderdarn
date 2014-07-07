@@ -56,8 +56,7 @@
                     } else if (block === "door") {
                         var target = this.map.cells[yc][xc].target;
                         target = target.split("_");
-                        console.log(target)
-                        game.reset(parseInt(target[0], 10) - 1, parseInt(target[1], 10) - 1);
+                        game.reset(parseInt(target[0], 10) - 1, parseInt(target[2], 10) - 1);
                     }
                     this.map.setBlockCell([xc, yc], blocks.PLAYER);
                 }
@@ -135,20 +134,20 @@
                 c.strokeStyle = "rgba(200, 0, 0, 0.7)";
                 c.lineWidth = 10;
                 c.beginPath();
-                c.moveTo(this.x + 15, this.y + 15);
+                c.moveTo(this.x, this.y);
                 this.path.forEach(function (b) {
-                    c.lineTo(b[0] * w + 15, b[1] * h + 15);
+                    c.lineTo(b[0] * w, b[1] * h);
                 });
                 c.stroke();
                 c.lineWidth = 1;
             }
 
 
-            c.fillStyle = "#333";
-            c.fillRect(this.x, this.y, this.w, this.h);
+            c.fillStyle = "#236";
+            c.fillRect(this.x - 16, this.y - 16, this.w, this.h);
 
-            c.strokeStyle = "#eee";
-            c.strokeRect(this.x, this.y, this.w, this.h);
+            c.strokeStyle = "#69e";
+            c.strokeRect(this.x - 16, this.y - 16, this.w, this.h);
         }
 
     });
