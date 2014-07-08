@@ -42,7 +42,7 @@
 			if (!this.falling) {
 				if (blocks.belowIsEmptyOrFalling(xc, yc, map)) {
 					this.falling = true;
-				} else if (isnt("boulder", 0, -1) && block(0, 1).rounded) {
+				} else if (block(0, 1).rounded) {
 					if (is("empty", +1, 0) && is("empty", +1, +1) && !block(+1, -1).falling) {
 						moveTo(this, +1, 0);
 						this.x += 32;
