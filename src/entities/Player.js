@@ -38,6 +38,9 @@
                 oldXc = this.xc,
                 oldYc = this.yc;
 
+            var five = this.map.getNeighbours(xc, yc),
+                block = five[2].type;
+
             // Check if new cell...
             if (xc !== this.xc || yc !== this.yc) {
                 
@@ -45,7 +48,6 @@
                 if (this.xc === this.tx && this.yc === this.ty) {
 
                 } else {
-                    var block = this.map.cells[yc][xc].type;
                     this.map.cells[oldYc][oldXc] = new blocks.Empty(oldXc, oldYc);
                     
                     if (block === "dirt") {
@@ -60,6 +62,10 @@
                     }
                     this.map.setBlockCell([xc, yc], blocks.PLAYER);
                 }
+            }
+
+            if (five.some(function (b) { return b && b.type === "creeper" })) {
+                game.reset();
             }
 
             this.xc = xc;

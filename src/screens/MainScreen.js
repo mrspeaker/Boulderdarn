@@ -26,7 +26,7 @@
             this.roomX = x | 0;
             this.roomY = y | 0;
 
-            this.loadLevel("res/data/level01.json" + "?" + Math.random(), function (data) {
+            this.loadLevel("res/data/level01.json?" + Math.random(), function (data) {
                 self.levelData = data;
                 self.parseLevel(data, function () {
                     self.loaded = true;
@@ -46,6 +46,7 @@
         },
 
         generateAStar: function (cells) {
+            
             var walkCells = cells.map(function (r) {
                 return r.map(function (c) {
                     return c.walkable ? 0 : 1;
@@ -53,6 +54,7 @@
             });
 
             return new Ω.Math.aStar.Graph(walkCells);
+
         },
 
         searchAStar: function (graph, from, to) {
@@ -78,7 +80,6 @@
 
             request.onreadystatechange = function() {
                 if( request.readyState == request.DONE && request.status == 200 ) {
-                    //console.log( 'server', request.getResponseHeader('server') );
                     cb(JSON.parse(request.responseText));
                 }
             };
@@ -138,7 +139,6 @@
                         block = new blocks.Diamond(i, j);
                         break;
                     default:
-                        console.log("empttt");
                         block = new blocks.Empty(i, j);
                     }
                     return block;
@@ -153,7 +153,6 @@
                     target = o.properties.target;
 
                 if (x > -1 && x < self.roomW && y > -1 && y< self.roomH) {
-                    console.log("add!", x, y, target)
                     var door = new blocks.Door(x, y, target);
                     self.map.cells[y][x] = door;
                 }
@@ -169,6 +168,7 @@
         },
 
         handleClick: function (x, y) {
+            
             if (y >= Ω.env.h - 32) {
                 game.reset();
                 return;
@@ -191,6 +191,7 @@
                 // aStar lib switches x & y
                 return [n.y, n.x];
             });
+
         },
 
         render: function (gfx) {

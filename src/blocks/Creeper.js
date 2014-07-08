@@ -53,8 +53,8 @@
 				if (block.type === "empty") {
 					blocks.moveTo(map, this, xc, yc, this.dir[0], this.dir[1], frame);
 					
-					this.xc = xc + this.dir[0]; // this.x / 32 | 0;
-					this.yc = yc + this.dir[1]; // this.y / 32 | 0;
+					this.xc += this.dir[0]; // this.x / 32 | 0;
+					this.yc += this.dir[1]; // this.y / 32 | 0;
 
 					this.x = xc * 32;
 					this.y = yc * 32;
