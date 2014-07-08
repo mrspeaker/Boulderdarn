@@ -66,11 +66,20 @@
 			if (block.type === "player") {
 				map.player.exploded = true;
 			};
+		},
+		moveTo = function (map, obj, xc, yc, xo, yo, frame) {
+			var ob = map.cells[yc + yo][xc + xo];
+			if (ob.frame === frame) {
+				console.error("overwriting already processed", ob.type);
+			}
+			map.cells[yc + yo][xc + xo] = obj;
+			map.cells[yc][xc] = new blocks.Empty(xc, yc);
 		};
 
 	blocks = {
 		belowIsEmptyOrFalling: belowIsEmptyOrFalling,
-		explode: explode
+		explode: explode,
+		moveTo: moveTo
 	};
 
 	blocks.Empty = Block.extend({

@@ -26,6 +26,8 @@
 				this.expand(map, frame);
 			}
 
+			this.frame = frame;
+
 		},
 
 		expand: function (map, frame) {

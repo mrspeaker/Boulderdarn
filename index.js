@@ -6,6 +6,7 @@ ejecta.include("lib/aStar.js");
 ejecta.include("lib/BlockMap.js");
 ejecta.include("src/blocks/Block.js");
 ejecta.include("src/blocks/Amoeba.js");
+ejecta.include("src/blocks/Creeper.js");
 ejecta.include("src/blocks/Boulder.js");
 ejecta.include("src/game.js");
 ejecta.include("src/entities/Player.js");

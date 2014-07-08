@@ -14,6 +14,9 @@
         roomX: 0,
         roomY: 0,
 
+        offsetX: 16,
+        offsetY: 16,
+
         loaded: false,
 
         init: function (x, y) {
@@ -120,6 +123,9 @@
                     case 5:
                         block = new blocks.Boulder(i, j);
                         break;
+                    case 6:
+                        block = new blocks.Creeper(i, j);
+                        break;
                     case 7:
                     case 8:
                         block = new blocks.Explosive(i, j);
@@ -131,16 +137,15 @@
                         self.diamonds++;
                         block = new blocks.Diamond(i, j);
                         break;
-
-                    
                     default:
+                        console.log("empttt");
                         block = new blocks.Empty(i, j);
                     }
                     return block;
                 });
             });
-            this.map.x -= 16;
-            this.map.y -= 16;
+            this.map.x -= this.offsetX;
+            this.map.y -= this.offsetY;
 
             objects.forEach(function (o) {
                 var x = (o.x / 32 | 0) - rx,
@@ -165,13 +170,13 @@
 
         handleClick: function (x, y) {
             if (y >= Ω.env.h - 32) {
-                console.log(
-                    "yah");
                 game.reset();
                 return;
             }
-            x += 16;
-            y += 16;
+
+            x += this.offsetX;
+            y += this.offsetY;
+
             // NOTE! BUG! Doesn't allow for scrolling browser
             var cell = this.map.getBlockCell([x, y]);
             this.player.target(cell[0], cell[1]);
