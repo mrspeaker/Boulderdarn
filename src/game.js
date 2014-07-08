@@ -32,9 +32,9 @@
 
         },
 
-        reset: function (x, y) {
+        reset: function (x, y, spawnTarget) {
 
-            this.setScreen(new MainScreen(x, y));
+            this.setScreen(new MainScreen(x, y, spawnTarget));
 
         },
 

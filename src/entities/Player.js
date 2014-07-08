@@ -16,6 +16,8 @@
             this._super(x, y, w, h);
             this.level = level;
             this.path = [];
+            this.xc = x / 32 | 0;
+            this.yc = y / 32 | 0;
         },
 
         tick: function () {
@@ -56,23 +58,23 @@
                         this.map.setBlockCell([xc, yc], new blocks.Empty(xc, yc));
                         this.level.diamondGet();
                     } else if (block === "door") {
-                        var target = this.map.cells[yc][xc].target;
-                        target = target.split("_");
-                        game.reset(parseInt(target[0], 10) - 1, parseInt(target[2], 10) - 1);
+                        var target = this.map.cells[yc][xc].target,
+                            lvl = target.split("_");
+                        game.reset(parseInt(lvl[0], 10) - 1, parseInt(lvl[2], 10) - 1, target);
                     }
                     this.map.setBlockCell([xc, yc], blocks.PLAYER);
                 }
             }
 
             if (five.some(function (b) { return b && b.type === "creeper" })) {
-                game.reset();
+                this.level.reset();
             }
 
             this.xc = xc;
             this.yc = yc;
 
             if (this.exploded) {
-                game.reset();                
+                this.level.reset();                
             }
 
             return true;

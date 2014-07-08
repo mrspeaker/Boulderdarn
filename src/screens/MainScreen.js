@@ -19,12 +19,13 @@
 
         loaded: false,
 
-        init: function (x, y) {
+        init: function (x, y, spawnTarget) {
 
             var self = this;
 
             this.roomX = x | 0;
             this.roomY = y | 0;
+            this.spawnTarget = spawnTarget;
 
             this.loadLevel("res/data/level01.json?" + Math.random(), function (data) {
                 self.levelData = data;
@@ -43,6 +44,10 @@
             if (Ω.input.pressed("touch")) {
                 this.handleClick(Ω.input.touch.x, Ω.input.touch.y);
             }
+        },
+
+        reset: function () {
+            game.reset(this.roomX, this.roomY);
         },
 
         generateAStar: function (cells) {
@@ -114,10 +119,10 @@
                         newC = c;
 
                     switch (c) {
-                    case 1:
+                    case 2:
                         block = new blocks.Dirt(i, j);
                         break;
-                    case 2:
+                    case 3:
                         block = new blocks.Stone(i, j);
                         break;
                     case 4:
@@ -147,21 +152,40 @@
             this.map.x -= this.offsetX;
             this.map.y -= this.offsetY;
 
+            var spawnDoor = null;
             objects.forEach(function (o) {
                 var x = (o.x / 32 | 0) - rx,
                     y = ((o.y - 32) / 32 | 0) - ry,
-                    target = o.properties.target;
+                    target = o.properties.target,
+                    name = o.name,
+                    obj = null;
 
                 if (x > -1 && x < self.roomW && y > -1 && y< self.roomH) {
-                    var door = new blocks.Door(x, y, target);
-                    self.map.cells[y][x] = door;
+                    obj = new blocks.Door(x, y, target);
+                    self.map.cells[y][x] = obj;
+                    if (this.spawnTarget && name === this.spawnTarget) {
+                        spawnDoor = obj;
+                    }
                 }
-            });
-
+            }, this);
 
             this.nodes = this.generateAStar(this.map.cells);
 
-            this.player = this.add(new Player(32, 32, 24, 24, this));
+            // Add player at spawn location
+            var px = 32,
+                py = 32;
+            if (spawnDoor) {
+                var dir = this.spawnTarget.split("_")[1],
+                    offs = {
+                        "n": [0, 1],
+                        "e": [-1, 0],
+                        "s": [0, -1],
+                        "w": [1, 0]
+                    };
+                px = (spawnDoor.xc + offs[dir][0]) * 32;
+                py = (spawnDoor.yc + offs[dir][1]) * 32;
+            }
+            this.player = this.add(new Player(px, py, 24, 24, this));
             this.player.setMap(this.map);
             this.map.player = this.player;
             cb();
@@ -170,7 +194,7 @@
         handleClick: function (x, y) {
             
             if (y >= Ω.env.h - 32) {
-                game.reset();
+                this.reset();
                 return;
             }
 

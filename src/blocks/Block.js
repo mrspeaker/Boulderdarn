@@ -107,7 +107,7 @@
 		type: "dirt",
 		walkable: true,
 		row: 0,
-		col: 0
+		col: 1
 	});
 
 	blocks.Stone = Block.extend({
