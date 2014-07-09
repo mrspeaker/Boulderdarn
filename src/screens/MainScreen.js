@@ -220,6 +220,9 @@
 
             // NOTE! BUG! Doesn't allow for scrolling browser
             var cell = this.map.getBlockCell([x, y]);
+            if (!cell || cell[0] === -1) {
+                return;
+            }
             this.player.target(cell[0], cell[1]);
             
             // Update aStar
