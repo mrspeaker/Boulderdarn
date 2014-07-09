@@ -7,6 +7,7 @@
         sheet: new Ω.SpriteSheet("res/tiles.png", 32, 32),
 
         diamonds: 0,
+        clicks: 0,
 
         roomW: 11,
         roomH: 17,
@@ -223,6 +224,8 @@
             if (!cell || cell[0] === -1) {
                 return;
             }
+            this.clicks++;
+
             this.player.target(cell[0], cell[1]);
 
             // Make target cell walkable for A* purposes (so you can click on non-walkable)
@@ -252,9 +255,20 @@
             var c = gfx.ctx;
             this.flash && this.flash.render(gfx);
 
-            c.fillStyle = "#999";
-            c.fillText(this.diamonds, 10, Ω.env.h - 10);
-            c.fillText(this.player.xc + ":" + this.player.yc, Ω.env.w - 24, Ω.env.h - 10);
+            c.font = "18pt helvetica";
+            c.fillStyle = "#844";
+            c.fillRect(60, Ω.env.h - 38, 200, 32);
+            c.fillStyle = "#333";
+            c.fillText("[[Restart Room!]]", 70, Ω.env.h - 15);
+
+            //c.font = "8pt helvetica";
+            c.fillStyle = "#FFF";
+
+            blocks.PLAYER.sheet.render(gfx, 4, 1, 10, Ω.env.h - 37);
+            c.fillText(this.diamonds, 20, Ω.env.h - 15);
+            c.fillText(this.clicks, Ω.env.w - 20, Ω.env.h - 12);
+
+            //c.fillText(this.player.xc + ":" + this.player.yc, Ω.env.w - 24, Ω.env.h - 10);
 
         }
     });

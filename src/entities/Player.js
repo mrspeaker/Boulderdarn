@@ -148,7 +148,7 @@
 
             if (this.path.length > 0) {
                 c.strokeStyle = "rgba(200, 0, 0, 0.7)";
-                c.lineWidth = 10;
+                c.lineWidth = 7;
                 c.beginPath();
                 c.moveTo(this.x, this.y);
                 this.path.forEach(function (b) {
