@@ -19,6 +19,8 @@
 
         loaded: false,
 
+        flash: null,
+
         init: function (x, y, spawnTarget) {
 
             var self = this;
@@ -44,10 +46,16 @@
             if (Ω.input.pressed("touch")) {
                 this.handleClick(Ω.input.touch.x, Ω.input.touch.y);
             }
+
+            if (this.flash) {
+                if (!this.flash.tick()) {
+                    this.flash = null;
+                }
+            }
         },
 
         reset: function () {
-            game.reset(this.roomX, this.roomY);
+            game.reset(this.roomX, this.roomY, this.spawnTarget);
         },
 
         generateAStar: function (cells) {
@@ -75,6 +83,10 @@
 
             if (--this.diamonds === 0) {
                 //game.reset();
+                this.flash = new Ω.Flash();
+                this.doors.forEach(function (d) {
+                    d.walkable = true;
+                });
             }
 
         },
@@ -110,7 +122,6 @@
                     cells[cells.length - 1].push(tiles.data[j * (33) + i]);
                 }
             }
-
             
             this.map = this.add(new Ω.BlockMap(this.sheet, cells, 2));
             this.map.cells = this.map.cells.map(function (r, j) {
@@ -153,7 +164,7 @@
             this.map.y -= this.offsetY;
 
             var spawnDoor = null;
-            objects.forEach(function (o) {
+            this.doors = objects.reduce(function (ac, o) {
                 var x = (o.x / 32 | 0) - rx,
                     y = ((o.y - 32) / 32 | 0) - ry,
                     target = o.properties.target,
@@ -162,12 +173,18 @@
 
                 if (x > -1 && x < self.roomW && y > -1 && y< self.roomH) {
                     obj = new blocks.Door(x, y, target);
+                    
                     self.map.cells[y][x] = obj;
-                    if (this.spawnTarget && name === this.spawnTarget) {
+                    if (self.spawnTarget && name === self.spawnTarget) {
                         spawnDoor = obj;
+                    } else {
+                        obj.walkable = false;    
                     }
+                    ac.push(obj);
                 }
-            }, this);
+
+                return ac;
+            }, []);
 
             this.nodes = this.generateAStar(this.map.cells);
 
@@ -221,8 +238,8 @@
         render: function (gfx) {
 
             this.clear(gfx, "hsl(1, 1%, 1%)");
-
             var c = gfx.ctx;
+            this.flash && this.flash.render(gfx);
 
             c.fillStyle = "#999";
             c.fillText(this.diamonds, 10, Ω.env.h - 10);

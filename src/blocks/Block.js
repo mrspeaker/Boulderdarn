@@ -130,6 +130,18 @@
 		init: function (x, y, target) {
 			this._super(x, y);
 			this.target = target;
+		},
+		render: function (gfx) {
+			if (this.walkable && this.frame % 40 < 20) {
+				return;
+			}
+			this.sheet.render(
+				gfx,
+				this.col,
+				this.row,
+				this.x,
+				this.y
+			);
 		}
 	});
 
