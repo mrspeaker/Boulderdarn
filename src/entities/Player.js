@@ -25,23 +25,30 @@
             var xo = 0,
                 yo = 0,
                 move = [],
-                speed = 3.5;
+                speed = 3.5,
+                following = this.path.length > 0;
 
-            if (this.path.length > 0) {
+            if (following) {
                 move = this.tick_follow(xo, yo);
                 xo = move[0];
                 yo = move[1];
             }
 
-            this.move(xo, yo, this.map);
+            // Do the move)
+            var moved = this.move(xo, yo, this.map),
+                stopped = moved[0] === 0 && moved[1] === 0;
 
+            if (following && stopped && (xo !== 0 || yo !== 0)) {
+                // Hit a road block. Kill the path.
+                this.path = [];
+            }
+            
             var xc = this.x / this.cellW | 0,
                 yc = this.y / this.cellH | 0,
                 oldXc = this.xc,
-                oldYc = this.yc;
-
-            var five = this.map.getNeighbours(xc, yc),
-                block = five[2].type;
+                oldYc = this.yc,
+                five = this.map.getNeighbours(xc, yc),
+                block = five[2].type; // Get the middle block of the 5 neighbours
 
             // Check if new cell...
             if (xc !== this.xc || yc !== this.yc) {
@@ -66,6 +73,7 @@
                 }
             }
 
+            // Todo: better collision eh... and not every frame?
             if (five.some(function (b) { return b && b.type === "creeper" })) {
                 this.level.reset();
             }
