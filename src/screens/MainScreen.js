@@ -224,9 +224,17 @@
                 return;
             }
             this.player.target(cell[0], cell[1]);
+
+            // Make target cell walkable for A* purposes (so you can click on non-walkable)
+            var isWalkable = this.map.cells[cell[1]][cell[0]].walkable;
+            this.map.cells[cell[1]][cell[0]].walkable = true;
             
             // Update aStar
             var graph = this.generateAStar(this.map.cells);
+
+            // Reset walkable cell.
+            this.map.cells[cell[1]][cell[0]].walkable = isWalkable;
+
             var path = this.searchAStar(
                 graph, 
                 [this.player.xc, this.player.yc], 
