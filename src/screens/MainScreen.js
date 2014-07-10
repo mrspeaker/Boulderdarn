@@ -246,8 +246,19 @@
         handleClick: function (x, y) {
             
             if (y >= Ω.env.h - 32) {
-                this.reset();
-                return;
+                if (x< Ω.env.w - 50) {
+                    this.reset();
+                    return;
+                } else {
+                    if (this.roomX === 3 && this.roomY === 0) {
+                        this.roomX = 0;
+                        this.roomY = 0;
+                    } else {
+                        this.roomX = 3;
+                        this.roomY = 0;
+                    }
+                    this.reset();
+                }
             }
 
             x += this.offsetX;
