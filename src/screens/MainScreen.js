@@ -255,13 +255,12 @@
             var c = gfx.ctx;
             this.flash && this.flash.render(gfx);
 
-            c.font = "18pt helvetica";
+            c.font = "18pt Helvetica";
             c.fillStyle = "#844";
             c.fillRect(60, Ω.env.h - 38, 200, 32);
             c.fillStyle = "#333";
-            c.fillText("[[Restart Room!]]", 70, Ω.env.h - 15);
+            c.fillText("[[Restart Room]]", 70, Ω.env.h - 15);
 
-            //c.font = "8pt helvetica";
             c.fillStyle = "#FFF";
 
             blocks.PLAYER.sheet.render(gfx, 4, 1, 10, Ω.env.h - 37);

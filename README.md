@@ -9,21 +9,19 @@
 ## MVP todos
 
 ### v1: Just me
-
-- Obvious "Refresh" button
-
 ### v2: Hardcore testers
 
-- Auto Die if can't get diamonds/exit
 - Better collision against bad guy
 - Save room state
+- "Room already cleared" indicator?
 
 ### v3: Most people should get it
 
 - Collision / explosion animation
+- Auto Die if can't get diamonds/exit
 - Death animation
 - Birth animation
-- Score systme
+- Score system/game over state?
 
 ### v4: Ready for testing
 
@@ -31,7 +29,7 @@
 - badguy transition states (not just jumping)
 - Better intro rooms
 - Different levels
-
+- Sounds
 
 ## Bugs
 
