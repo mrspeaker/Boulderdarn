@@ -59,7 +59,11 @@
 			].forEach(function (p) {
 				var x = xc + p[0],
 					y = yc + p[1];
+				var b = map.cells[y][x];
 				map.cells[y][x] = new blocks.Empty(x, y);
+				if (b.explodable) {
+					explode(x, y, map, b);
+				}
 			});
 
 			// FIXME: shouldn't be here, yo.

@@ -35,6 +35,9 @@
 ## Bugs
 
 - When player moves they sometimes "eat" moving blocks
+- Falling blocks should crush bad guys
+- Exploded diamonds remove from count?
+- Should be able to "push" rocks
 
 
 ## FIX Ω for EJECTA, YO!

@@ -108,19 +108,53 @@
 
         },
 
+        randRoom: function () {
+            var cells = [];
+            for (var j = 0; j < this.roomH; j++) {
+                cells.push([]);
+                for (var i = 0; i < this.roomW; i++) {
+                    var spread = [
+                        1, 1, 1, 1, 1, 1,
+                        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
+                        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
+                        3, 3, 
+                        4, 4, 4, 4, 4, 4, 4, 4,
+                        6, 
+                        8, 8, 8,
+                        9, 
+                        11, 11, 11, 11];
+                    var cell = spread[Math.random() * spread.length | 0];
+                    if (j === 0 || i === 0 || j === this.roomH - 1 || i === this.roomW - 1) {
+                        cell = 3;
+                    }
+                    if (i === 1 && j === 1) {
+                        cell = 0;
+                    }
+                    cells[cells.length - 1].push(cell);
+                }
+            }
+            return cells;
+        },
+
         parseLevel: function (data, cb) {
             var tiles = data.layers[0],
                 objects = data.layers[1].objects,
-                self = this;
+                self = this,
+                h = data.height,
+                w = data.width;
 
             var cells = [],
                 rx = this.roomX * this.roomW,
                 ry = this.roomY * this.roomH;
 
-            for (var j = ry; j < ry + this.roomH; j++) {
-                cells.push([]);
-                for (var i = rx; i < rx + this.roomW; i++) {
-                    cells[cells.length - 1].push(tiles.data[j * (33) + i]);
+            if (this.roomX === 3 && this.roomY === 0) {
+                cells = this.randRoom();
+            } else {
+                for (var j = ry; j < ry + this.roomH; j++) {
+                    cells.push([]);
+                    for (var i = rx; i < rx + this.roomW; i++) {
+                        cells[cells.length - 1].push(tiles.data[j * w + i]);
+                    }
                 }
             }
             
@@ -221,7 +255,7 @@
 
             // NOTE! BUG! Doesn't allow for scrolling browser
             var cell = this.map.getBlockCell([x, y]);
-            if (!cell || cell[0] === -1) {
+            if (!cell || cell[0] === -1 || cell[1] === -1) {
                 return;
             }
             this.clicks++;
