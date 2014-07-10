@@ -40,7 +40,16 @@
 
         load: function () {
 
-            this.reset();
+            var url = Ω.urlParams.r;
+
+            if (!url) {
+                this.reset();
+            } else {
+                var room = url.split("_").map(function (r) {
+                        return parseInt(r, 10) - 1;
+                    });
+                this.reset(room[0], room[2], url);
+            }
 
         }
 

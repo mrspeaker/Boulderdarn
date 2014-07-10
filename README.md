@@ -22,6 +22,7 @@
 - Death animation
 - Birth animation
 - Score system/game over state?
+- Scroll screen to next room
 
 ### v4: Ready for testing
 
