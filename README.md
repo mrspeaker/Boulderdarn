@@ -22,13 +22,13 @@
 - Death animation
 - Birth animation
 - Score system/game over state?
-- Scroll screen to next room
+- Indicate can't find path on click
 
 ### v4: Ready for testing
 
+- Scroll screen to next room
 - Aomeba & bad guy animations
 - badguy transition states (not just jumping)
-- Better intro rooms
 - Different levels
 - Sounds
 
