@@ -20,7 +20,7 @@
             });
 
             Ω.input.bind({
-                "space": "space",
+                "space": ["touch", "mouse1", "space"],
                 "touch": "touch",
                 "escape": "escape",
                 "left": "left",
@@ -34,7 +34,11 @@
 
         reset: function (x, y, spawnTarget) {
 
-            this.setScreen(new MainScreen(x, y, spawnTarget));
+            if (x !== undefined) {
+                this.setScreen(new MainScreen(x, y, spawnTarget));
+            } else {
+                this.setScreen(new TitleScreen(x, y, spawnTarget));
+            }
 
         },
 
