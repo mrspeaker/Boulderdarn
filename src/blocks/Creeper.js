@@ -9,6 +9,8 @@
 		row: 0,
 		spread: 130,
 
+		explodable: true,
+		
 		dir: null,
 
 		startFrame: -1,

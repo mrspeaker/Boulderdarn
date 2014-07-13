@@ -211,6 +211,7 @@
 					this.y = newY * 32;
 					this.falling = false;
 					var block = map.cells[newY + 1][xc];
+					console.log(block.type, block.explodable)
 					if (block.explodable) {
 						blocks.explode(xc, newY + 1, map, block);
 					}

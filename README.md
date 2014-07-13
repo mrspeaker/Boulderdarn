@@ -22,7 +22,7 @@
 - Death animation
 - Birth animation
 - Score system/game over state?
-- Indicate can't find path on click
+- Indicate can't find path on click (screen shake)
 
 ### v4: Ready for testing
 

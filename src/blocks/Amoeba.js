@@ -8,7 +8,6 @@
 		col: 2,
 		row: 1,
 		spread: 130,
-		explodable: true,
 
 		startFrame: -1,
 

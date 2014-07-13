@@ -147,7 +147,7 @@
                 h = this.cellH;
 
             if (this.path.length > 0) {
-                c.strokeStyle = "rgba(200, 0, 0, 0.7)";
+                c.strokeStyle = "rgba(212, 93, 151, 0.7)";
                 c.lineWidth = 7;
                 c.beginPath();
                 c.moveTo(this.x, this.y);
