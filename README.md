@@ -14,6 +14,7 @@
 - Better collision against bad guy
 - Save room state
 - "Room already cleared" indicator?
+- indicate score for room?
 
 ### v3: Most people should get it
 
